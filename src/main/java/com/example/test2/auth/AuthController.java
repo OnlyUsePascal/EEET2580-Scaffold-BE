@@ -1,6 +1,8 @@
 package com.example.test2.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +43,8 @@ public class AuthController {
   }
 
   @PostMapping("/sign-out")
-  public String signout() {
-    return "signout";
+  public String signout( HttpServletRequest request, HttpServletResponse response) {
+    SecurityContextHolder.getContext().setAuthentication(null);
+    return "signed out!";
   }
 }

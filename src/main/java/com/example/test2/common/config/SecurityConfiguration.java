@@ -48,7 +48,7 @@ public class SecurityConfiguration {
             .permitAll()
             // .requestMatchers("/stat").hasRole(
             // UserRole.STAFF.getName()) // if role -> "ROLE_" + role !!!
-            .requestMatchers("/stat").hasAuthority(UserRole.STAFF.getName())
+            .requestMatchers("/stat").hasAuthority(UserRole.ADMIN.getName())
             .anyRequest().authenticated())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);
