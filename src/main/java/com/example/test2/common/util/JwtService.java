@@ -1,23 +1,18 @@
 package com.example.test2.common.util;
 
-import java.security.SignatureException;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.example.test2.common.enums.UserRole;
 import com.example.test2.user.User;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 
 @Service
 public class JwtService {

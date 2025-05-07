@@ -1,12 +1,10 @@
 package com.example.test2.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.test2.auth.AuthRequestFilter;
 import com.example.test2.auth.AuthService;
 
 @Service
