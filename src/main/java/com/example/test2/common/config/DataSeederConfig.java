@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Configuration
 public class DataSeederConfig implements CommandLineRunner {
-  private UserRepository userRepository; 
+  private UserRepository userRepository;
 
   @Override
   public void run(String... args) {

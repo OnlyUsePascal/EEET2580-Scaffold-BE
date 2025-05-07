@@ -9,11 +9,11 @@ OS = what
 
 # java
 find-os:
-ifeq ($(UNAME_S), Linux)
-	@echo "OS name: Linux!"
+ifeq ($(UNAME_S), Darwin)
+	@echo "OS name: Darwin!"
 	$(eval MVN_CMD=./mvnw)
 else
-	@echo "OS name: Windows!"
+	@echo "OS name: Windows!"~
 	$(eval MVN_CMD=.\mvnw)
 endif
 
