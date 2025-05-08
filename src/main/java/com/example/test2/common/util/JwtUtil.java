@@ -1,17 +1,17 @@
 package com.example.test2.common.util;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.example.test2.user.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -19,19 +19,20 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
   private Long TOKEN_AGE = Long.valueOf(3600000);
 
-  public String createToken(User user) {
-    var claims = new DefaultClaims();
-    // TODO: replace userdetails
-    claims.put("role", user.getRole());
+  public String createToken(UserDetails user) {
+    var claims = new HashMap<String, Object>();
+    claims.put("role", ((User) user).getRole());
 
-    return Jwts
-        .builder()
-        .setClaims(claims)
-        .setSubject(user.getUsername()) // unique: email, username, or id
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + TOKEN_AGE))
+    var now = System.currentTimeMillis();
+
+    return Jwts.builder()
+        .claims()
+        .subject(user.getUsername())
+        .add(claims)
+        .and()
         .signWith(getSecretKey())
-        // .signWith(keyStoreManager.getPrivateKey(), SignatureAlgorithm.RS256)
+        .issuedAt(new Date(now))
+        .expiration(new Date(now + TOKEN_AGE))
         .compact();
   }
 
@@ -44,12 +45,11 @@ public class JwtUtil {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts
-        .parserBuilder()
-        .setSigningKey(getSecretKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+    return Jwts.parser()
+    .verifyWith(getSecretKey())
+    .build()
+    .parseSignedClaims(token)
+    .getPayload();
   }
 
   public boolean isTokenValid(String token) {
