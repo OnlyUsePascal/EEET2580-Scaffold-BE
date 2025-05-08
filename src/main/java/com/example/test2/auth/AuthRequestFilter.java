@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
-  private UserService userService;
-  private JwtUtil jwtUtil;
+  private final UserService userService;
+  private final JwtUtil jwtUtil;
 
   @Autowired
   public AuthRequestFilter(UserService userService, JwtUtil jwtUtil) {

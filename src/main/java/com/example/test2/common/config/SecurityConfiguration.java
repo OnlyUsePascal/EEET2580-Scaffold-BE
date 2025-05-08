@@ -52,6 +52,9 @@ public class SecurityConfiguration {
             // .requestMatchers("/stat").hasRole(UserRole.STAFF.getName()) // if role -> "ROLE_" + role !!!
             .requestMatchers("/stat").hasAuthority(UserRole.ADMIN.getName())
             .requestMatchers(HttpMethod.GET, "/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/**").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
             .anyRequest().authenticated())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);

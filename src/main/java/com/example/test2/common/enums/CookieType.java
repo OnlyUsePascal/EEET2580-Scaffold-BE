@@ -8,5 +8,5 @@ public enum CookieType {
   AUTH("auth"),
   SESSION("session");
 
-  private String name;
+  private final String name;
 }

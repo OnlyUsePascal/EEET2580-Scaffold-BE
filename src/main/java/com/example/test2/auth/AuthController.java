@@ -14,8 +14,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+  private final AuthService authService;
+
   @Autowired
-  private AuthService authService;
+  public AuthController(AuthService authService) {
+    this.authService = authService;
+  }
 
   @PostMapping("/sign-up")
   public String register() {

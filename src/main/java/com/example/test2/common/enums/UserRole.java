@@ -10,5 +10,5 @@ public enum UserRole {
   ADMIN("ADMIN"),
   STAFF("STAFF");
   
-  private String name;
+  private final String name;
 }
