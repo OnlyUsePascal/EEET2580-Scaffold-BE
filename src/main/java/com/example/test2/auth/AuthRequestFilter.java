@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.test2.common.enums.CookieType;
-import com.example.test2.common.util.JwtService;
+import com.example.test2.common.util.JwtUtil;
 import com.example.test2.user.User;
 import com.example.test2.user.UserService;
 
@@ -24,8 +24,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
-  @Autowired
   private UserService userService;
+  private JwtUtil jwtUtil;
+  
+  @Autowired
+  public AuthRequestFilter(UserService userService, JwtUtil jwtUtil) {
+    this.userService = userService;
+    this.jwtUtil = jwtUtil;
+  }
 
   @Override
   protected void doFilterInternal(
@@ -44,11 +50,11 @@ public class AuthRequestFilter extends OncePerRequestFilter {
       }
 
       // valid token + no auth context
-      if (token != null && JwtService.isTokenValid(token) &&
+      if (token != null && jwtUtil.isTokenValid(token) &&
           SecurityContextHolder.getContext().getAuthentication() == null) {
         // extract profile
-        String email = JwtService.extractEmail(token);
-        String role = JwtService.extractRole(token);
+        String email = jwtUtil.extractEmail(token);
+        String role = jwtUtil.extractRole(token);
         User user = userService.loadUserByUsername(email);
 
         // token for spring context
