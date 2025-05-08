@@ -21,12 +21,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
   private UserService userService;
   private JwtUtil jwtUtil;
-  
+
   @Autowired
   public AuthRequestFilter(UserService userService, JwtUtil jwtUtil) {
     this.userService = userService;
@@ -39,40 +41,48 @@ public class AuthRequestFilter extends OncePerRequestFilter {
       throws ServletException, IOException, IllegalArgumentException {
     var cookies = request.getCookies();
 
-    if (cookies != null) {
-      // extract token
-      String token = null;
-      for (var ck : cookies) {
-        if (ck.getName().equals(CookieType.AUTH.getName())) {
-          token = ck.getValue();
-          break;
-        }
-      }
-
-      // valid token + no auth context
-      if (token != null && jwtUtil.isTokenValid(token) &&
-          SecurityContextHolder.getContext().getAuthentication() == null) {
-        // extract profile
-        String email = jwtUtil.extractEmail(token);
-        String role = jwtUtil.extractRole(token);
-        User user = userService.loadUserByUsername(email);
-
-        // token for spring context
-        var authorities = new ArrayList<SimpleGrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(role));
-        var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
-
-        // Add extra details into the token,
-        // in this case, we add the request information
-        authToken.setDetails(new WebAuthenticationDetailsSource()
-            .buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        System.out.println("we have cookies :) | " + authToken);
-      }
-    } else {
-      System.out.println("no cookies :(");
+    if (cookies == null) {
+      log.info("No cookies :(");
+      filterChain.doFilter(request, response);
+      return;
     }
+
+    String token = null;
+    for (var ck : cookies) {
+      if (ck.getName().equals(CookieType.AUTH.getName())) {
+        token = ck.getValue();
+        break;
+      }
+    }
+    if (token == null) {
+      log.info("Cookies found but no token :(");
+      filterChain.doFilter(request, response);
+      return;
+    }
+
+    try {
+      // extract profile
+      String email = jwtUtil.extractEmail(token);
+      String role = jwtUtil.extractRole(token);
+      User user = userService.loadUserByUsername(email);
+
+      // token for spring context
+      var authorities = new ArrayList<SimpleGrantedAuthority>();
+      authorities.add(new SimpleGrantedAuthority(role));
+      var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
+
+      // Add extra details into the token, in this case, request information
+      authToken.setDetails(new WebAuthenticationDetailsSource()
+          .buildDetails(request));
+
+      SecurityContextHolder.getContext().setAuthentication(authToken);
+
+      System.out.println("we have token :) | " + authToken);
+    } catch (Exception e) {
+      log.warn("Authentication failed: {}", e.getMessage());
+      throw new RuntimeException(e);
+    }
+
     filterChain.doFilter(request, response);
   }
 }
