@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 public class SwaggerConfig {
-
+	//http://localhost:8081/api/swagger-ui/index.html
 	@Bean
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI()
