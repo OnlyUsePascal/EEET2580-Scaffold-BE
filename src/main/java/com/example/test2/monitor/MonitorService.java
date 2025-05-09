@@ -1,5 +1,6 @@
 package com.example.test2.monitor;
 
+import com.example.test2.monitor.dto.MonitorDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -12,9 +13,9 @@ public interface MonitorService {
 
     Optional<Monitor> getMonitorByName(String name);
 
-    Monitor createMonitor(Monitor monitor);
+    Monitor createMonitor(MonitorDTO monitor);
 
-    Monitor updateMonitor(Monitor monitor);
+    Monitor updateMonitor(int id, MonitorDTO monitor);
 
     void deleteMonitorById(int id);
 

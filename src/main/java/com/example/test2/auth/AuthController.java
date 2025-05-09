@@ -26,19 +26,19 @@ public class AuthController {
   }
 
   @PostMapping("/sign-in")
-  public AuthDTO signin(
+  public ResponseEntity<AuthDTO> signin(
           HttpServletRequest request, HttpServletResponse response,
           @RequestBody LoginDTO dto) throws Exception {
     var cookie = authService.signIn(dto);
     response.addCookie(cookie);
-    return new AuthDTO("Sign in successfully!");
+    return ResponseEntity.ok(new AuthDTO("Sign in successfully!"));
   }
 
   @PostMapping("/sign-out")
-  public AuthDTO performLogout(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<AuthDTO>  performLogout(HttpServletRequest request, HttpServletResponse response) {
     var cookie = authService.signOut(request);
     response.addCookie(cookie);
-    return new AuthDTO("Sign out successfully");
+    return ResponseEntity.ok(new AuthDTO("Sign out successfully"));
   }
 
   @GetMapping("/me")

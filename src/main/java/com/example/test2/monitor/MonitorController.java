@@ -30,59 +30,26 @@ public class MonitorController {
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
         Page<Monitor> page = monitorService.getAllMonitorsByPagination(pageNumber, pageSize, sortBy, sortOrder);
-        return ResponseEntity.ok(page); // 200
+        return ResponseEntity.ok(page);
     }
 
     @PostMapping("/monitors")
-    public ResponseEntity<Monitor> createMonitor(@Valid @RequestBody MonitorDTO monitorDTO) {
-        if (monitorService.getMonitorByName(monitorDTO.getName()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
-        }
-
-        Monitor monitor = new Monitor();
-        monitor.setName(monitorDTO.getName());
-        monitor.setBrand(monitorDTO.getBrand());
-        monitor.setPrice(monitorDTO.getPrice());
-
-        Monitor createdMonitor = monitorService.createMonitor(monitor);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdMonitor); // 201
+    public ResponseEntity<Monitor> createMonitor(@Valid @RequestBody MonitorDTO monitorDTO) throws Exception {
+        return ResponseEntity.ok(monitorService.createMonitor(monitorDTO));
     }
+
 
     @PutMapping("/monitors/{id}")
     public ResponseEntity<Monitor> updateMonitor(
             @PathVariable int id,
-            @Valid @RequestBody Monitor monitor
+            @Valid @RequestBody MonitorDTO monitorDTO
     ) {
-        Optional<Monitor> existingMonitor = monitorService.getMonitorById(id);
-        if (existingMonitor.isEmpty()) {
-            return ResponseEntity.notFound().build(); // 404
-        }
-
-        Optional<Monitor> duplicateName = monitorService.getMonitorByName(monitor.getName());
-        if (duplicateName.isPresent() && duplicateName.get().getId() != id) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
-        }
-
-        monitor.setId(id);
-        Monitor updated = monitorService.updateMonitor(monitor);
-        return ResponseEntity.ok(updated); // 200 OK
+        return ResponseEntity.ok(monitorService.updateMonitor(id, monitorDTO));
     }
 
     @DeleteMapping("/monitors/{id}")
-    public ResponseEntity<Void> deleteMonitorById(@PathVariable int id) {
-        Optional<Monitor> monitor = monitorService.getMonitorById(id);
-        if (monitor.isEmpty()) {
-            return ResponseEntity.notFound().build(); // 404
-        }
-
+    public ResponseEntity<String> deleteMonitorById(@PathVariable int id) {
         monitorService.deleteMonitorById(id);
-
-        // Double-check deletion (optional — may not be needed if `deleteById()` is safe)
-        boolean stillExists = monitorService.getMonitorById(id).isPresent();
-        if (stillExists) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
-        }
-
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.ok("Deleted product with id:" + id);
     }
 }

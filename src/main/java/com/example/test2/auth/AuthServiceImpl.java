@@ -7,6 +7,7 @@ import com.example.test2.user.dto.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.example.test2.common.util.JwtUtil;
 import com.example.test2.user.UserServiceImpl;
 
 import jakarta.servlet.http.Cookie;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -58,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
     var auth = SecurityContextHolder.getContext().getAuthentication();
 
     if (auth == null || !auth.isAuthenticated()) {
-      throw new AuthenticationCredentialsNotFoundException("No credentials found for current user");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No credentials found for current user");
     }
 
     var principal = (User) auth.getPrincipal();
