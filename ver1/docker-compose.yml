@@ -1,0 +1,12 @@
+services:
+    postgres:
+      image: 'postgres:latest'
+      container_name: 'ead_test'
+      ports:
+        - "5434:5432"
+      environment:
+        POSTGRES_DB: 'ead_db'
+        POSTGRES_USER: 'ead_user'
+        POSTGRES_PASSWORD: 'ead_pwd'
+      volumes:
+        - '.postgres-data:/var/lib/postgresql/data'
