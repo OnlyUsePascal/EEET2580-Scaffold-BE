@@ -1,6 +1,5 @@
 package com.example.lab_test1.common.utils;
 
-import org.springframework.stereotype.Component;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -9,6 +8,9 @@ import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class KeyUtil {
@@ -29,11 +31,7 @@ public class KeyUtil {
 
   private KeyStore loadKeyStore() throws Exception {
     KeyStore ks = KeyStore.getInstance(keyStoreType);
-    try {
-      ks.load(keyStore.getInputStream(), keyStorePassword.toCharArray());
-    } catch (Exception e) {
-      throw new RuntimeException("Failed to load keystore", e);
-    }
+    ks.load(keyStore.getInputStream(), keyStorePassword.toCharArray());
     return ks;
   }
 

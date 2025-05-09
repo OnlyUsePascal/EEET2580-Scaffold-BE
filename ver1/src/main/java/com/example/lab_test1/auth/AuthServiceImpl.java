@@ -3,10 +3,12 @@ package com.example.lab_test1.auth;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.lab_test1.auth.dto.LoginRequest;
 import com.example.lab_test1.common.enums.CookieType;
@@ -41,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
     var user = userService.loadUserByUsername(dto.getEmail());
 
     if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
-      throw new AuthenticationException("Wrong password");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
 
     // token for cookie
     return cookieUtil.createCookie(CookieType.AUTH, jwtUtil.createToken(user), CookieUtil.COOKIE_AGE);
@@ -62,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
     var auth = SecurityContextHolder.getContext().getAuthentication();
 
     if (auth == null || !auth.isAuthenticated()) {
-      throw new AuthenticationCredentialsNotFoundException("No credentials found for current user");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No credentials found for current user");
     }
 
     var principal = (User) auth.getPrincipal();

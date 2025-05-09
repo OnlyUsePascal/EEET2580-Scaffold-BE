@@ -1,9 +1,13 @@
 package com.example.lab_test1.product;
 
+import java.util.Optional;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.lab_test1.product.dto.ProductDTO;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -23,29 +29,29 @@ public class ProductController {
   private ProductService productService;
 
   @GetMapping
-  public Page<Product> listProducts(
+  public ResponseEntity<Page<Product>> listProducts(
       @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(name = "pageNo", defaultValue = "0") int pageNo) {
 
     var pageable = PageRequest.of(pageNo, 4, Sort.by(sortBy));
-    return productService.listProducts(pageable);
+    return ResponseEntity.ok(productService.listProducts(pageable));
   }
 
   @PostMapping
-  public Product addProduct(@RequestBody ProductDTO dto) throws Exception {
-    return productService.createProduct(dto);
+  public ResponseEntity<Product> addProduct(@Valid @RequestBody ProductDTO dto) throws Exception {
+    return ResponseEntity.ok(productService.createProduct(dto));
   }
 
   @PutMapping("/{id}")
-  public Product updateProduct(
+  public ResponseEntity<Product> updateProduct(
       @PathVariable Long id,
       @RequestBody ProductDTO dto) throws Exception {
-    return productService.updateProduct(id, dto);
+    return ResponseEntity.ok(productService.updateProduct(id, dto));
   }
 
   @DeleteMapping("/{id}")
-  public String deleteProduct(@PathVariable Long id) throws Exception {
+  public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws Exception {
     productService.deleteProduct(id);
-    return "deleted product with id:" + id;
+    return ResponseEntity.ok("deleted product with id:" + id);
   }
 }

@@ -1,7 +1,11 @@
 package com.example.lab_test1.user;
 
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -12,8 +16,9 @@ public class UserServiceImpl implements UserService {
   }
 
   public User loadUserByUsername(String email) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException("email not found :("));
-    return user;
+    var user = userRepository.findByEmail(email);
+    if (user.isEmpty())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found with email:" + email);
+    return user.get();   
   }
 }

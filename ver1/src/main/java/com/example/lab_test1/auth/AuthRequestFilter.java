@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.lab_test1.common.enums.CookieType;
 import com.example.lab_test1.common.utils.JwtUtil;
@@ -25,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class AuthRequestFilter extends OncePerRequestFilter{
+public class AuthRequestFilter extends OncePerRequestFilter {
   private UserService userService;
   private JwtUtil jwtUtil;
 
@@ -79,8 +82,7 @@ public class AuthRequestFilter extends OncePerRequestFilter{
 
       System.out.println("we have token :) | " + authToken);
     } catch (Exception e) {
-      log.warn("Authentication failed: {}", e.getMessage());
-      throw new RuntimeException(e);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
     filterChain.doFilter(request, response);
