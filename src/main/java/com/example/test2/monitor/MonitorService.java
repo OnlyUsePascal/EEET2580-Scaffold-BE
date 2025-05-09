@@ -1,7 +1,6 @@
 package com.example.test2.monitor;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,4 +17,6 @@ public interface MonitorService {
     Monitor updateMonitor(Monitor monitor);
 
     void deleteMonitorById(int id);
+
+    Page<Monitor> getAllMonitorsByPagination(int pageNumber, int pageSize, String sortBy, String sortOrder);
 }

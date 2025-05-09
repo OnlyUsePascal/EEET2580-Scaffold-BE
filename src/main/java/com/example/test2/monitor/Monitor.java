@@ -5,6 +5,28 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "monitor")
 public class Monitor {
+
+    /*
+    1. Name
+    @NotBlank(message = "First name is required")
+    @Pattern(
+            regexp = "^[A-Z][a-z]*$",
+            message = "First name must be one capitalized word with alphabetic characters only (e.g., Tom)"
+    )
+
+    2. Email must end with .com or .vn
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Pattern(
+            regexp = "^[\\w.-]+@[\\w.-]+\\.(com|vn)$",
+            message = "Email must end with .com or .vn"
+    )
+
+    3. DOB in the past
+    @NotNull(message = "Date of birth is required")
+    @Past(message = "Date of birth must be in the past")
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

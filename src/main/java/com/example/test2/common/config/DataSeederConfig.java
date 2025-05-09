@@ -21,14 +21,14 @@ public class DataSeederConfig implements CommandLineRunner {
   public void run(String... args) {
     var users = new ArrayList<User>();
     users.add(User.builder()
-    .email("admin@mail.com")
+    .email("admin@gmail.com")
     .password("123")
     .role("ADMIN")
     .name("admin user")
     .build());
     
     users.add(User.builder()
-    .email("user@mail.com")
+    .email("user@gmail.com")
     .password("123")
     .role("USER")
     .name("user user")
@@ -37,4 +37,4 @@ public class DataSeederConfig implements CommandLineRunner {
     userRepository.deleteAll();
     userRepository.saveAll(users);
   }
-};
+}

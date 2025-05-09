@@ -1,19 +1,14 @@
 package com.example.test2.monitor;
 
 import com.example.test2.monitor.dto.MonitorDTO;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,12 +23,17 @@ public class MonitorController {
     }
 
     @GetMapping("/monitors")
-    public Optional<List<Monitor>> getAllMonitors() {
-        return monitorService.getAllMonitors();
+    public ResponseEntity<Page<Monitor>> getAllMonitorsByPagination(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+    ) {
+        return new ResponseEntity<>(monitorService.getAllMonitorsByPagination(pageNumber, pageSize, sortBy, sortOrder), HttpStatus.OK);
     }
 
     @PostMapping("/monitors")
-    public ResponseEntity<?> createMonitor(@RequestBody MonitorDTO monitorDTO) {
+    public ResponseEntity<?> createMonitor(@Valid @RequestBody MonitorDTO monitorDTO) {
         Optional<Monitor> existing = monitorService.getMonitorByName(monitorDTO.getName());
 
         if (existing.isPresent()) {
@@ -52,7 +52,7 @@ public class MonitorController {
     }
 
     @PutMapping("/monitors/{id}")
-    public ResponseEntity<?> updateMonitor(@PathVariable int id, @RequestBody Monitor monitor) {
+    public ResponseEntity<?> updateMonitor(@PathVariable int id, @Valid @RequestBody Monitor monitor) {
         Monitor result = monitorService.getMonitorById(id).orElse(null);
 
         if (result == null) {

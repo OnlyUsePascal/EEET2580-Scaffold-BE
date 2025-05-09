@@ -1,7 +1,10 @@
 package com.example.test2.monitor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,5 +57,13 @@ public class MonitorServiceImpl implements MonitorService {
     @Override
     public void deleteMonitorById(int id) {
         monitorRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Monitor> getAllMonitorsByPagination(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable request = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
+
+        return monitorRepository.findAll(request);
     }
 }
