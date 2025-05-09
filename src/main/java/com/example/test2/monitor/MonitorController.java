@@ -29,17 +29,14 @@ public class MonitorController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
-        return new ResponseEntity<>(monitorService.getAllMonitorsByPagination(pageNumber, pageSize, sortBy, sortOrder), HttpStatus.OK);
+        Page<Monitor> page = monitorService.getAllMonitorsByPagination(pageNumber, pageSize, sortBy, sortOrder);
+        return ResponseEntity.ok(page); // 200
     }
 
     @PostMapping("/monitors")
-    public ResponseEntity<?> createMonitor(@Valid @RequestBody MonitorDTO monitorDTO) {
-        Optional<Monitor> existing = monitorService.getMonitorByName(monitorDTO.getName());
-
-        if (existing.isPresent()) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Monitor name already exists");
-            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    public ResponseEntity<Monitor> createMonitor(@Valid @RequestBody MonitorDTO monitorDTO) {
+        if (monitorService.getMonitorByName(monitorDTO.getName()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
         }
 
         Monitor monitor = new Monitor();
@@ -48,44 +45,44 @@ public class MonitorController {
         monitor.setPrice(monitorDTO.getPrice());
 
         Monitor createdMonitor = monitorService.createMonitor(monitor);
-        return new ResponseEntity<>(createdMonitor, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdMonitor); // 201
     }
 
     @PutMapping("/monitors/{id}")
-    public ResponseEntity<?> updateMonitor(@PathVariable int id, @Valid @RequestBody Monitor monitor) {
-        Monitor result = monitorService.getMonitorById(id).orElse(null);
-
-        if (result == null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Monitor id not found - " + id);
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Monitor> updateMonitor(
+            @PathVariable int id,
+            @Valid @RequestBody Monitor monitor
+    ) {
+        Optional<Monitor> existingMonitor = monitorService.getMonitorById(id);
+        if (existingMonitor.isEmpty()) {
+            return ResponseEntity.notFound().build(); // 404
         }
 
-        Optional<Monitor> existing = monitorService.getMonitorByName(monitor.getName());
-
-        if (existing.isPresent()) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Monitor name already exists, use other name");
-            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        Optional<Monitor> duplicateName = monitorService.getMonitorByName(monitor.getName());
+        if (duplicateName.isPresent() && duplicateName.get().getId() != id) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
         }
 
         monitor.setId(id);
-        Monitor updatedMonitor = monitorService.updateMonitor(monitor);
-        return new ResponseEntity<>(updatedMonitor, HttpStatus.OK);
+        Monitor updated = monitorService.updateMonitor(monitor);
+        return ResponseEntity.ok(updated); // 200 OK
     }
 
     @DeleteMapping("/monitors/{id}")
-    public ResponseEntity<?> deleteMonitorById(@PathVariable int id) {
-        monitorService.deleteMonitorById(id);
-
-        boolean isExisted = monitorService.getMonitorById(id).isPresent();
-
-        if (isExisted) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to delete monitor with id: " + id);
-            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    public ResponseEntity<Void> deleteMonitorById(@PathVariable int id) {
+        Optional<Monitor> monitor = monitorService.getMonitorById(id);
+        if (monitor.isEmpty()) {
+            return ResponseEntity.notFound().build(); // 404
         }
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        monitorService.deleteMonitorById(id);
+
+        // Double-check deletion (optional — may not be needed if `deleteById()` is safe)
+        boolean stillExists = monitorService.getMonitorById(id).isPresent();
+        if (stillExists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
+        }
+
+        return ResponseEntity.noContent().build(); // 204
     }
 }
