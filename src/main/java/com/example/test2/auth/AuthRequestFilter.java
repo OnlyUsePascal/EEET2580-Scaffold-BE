@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.example.test2.common.enums.CookieType;
 import com.example.test2.common.util.JwtUtil;
 import com.example.test2.user.User;
-import com.example.test2.user.UserService;
+import com.example.test2.user.UserServiceImpl;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
@@ -23,22 +23,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
-public class AuthRequestFilter extends OncePerRequestFilter {
-  private final UserService userService;
+@Slf4j
+public class AuthRequestFilter extends OncePerRequestFilter{
+  private final UserServiceImpl userService;
   private final JwtUtil jwtUtil;
 
   @Autowired
-  public AuthRequestFilter(UserService userService, JwtUtil jwtUtil) {
+  public AuthRequestFilter(UserServiceImpl userService, JwtUtil jwtUtil) {
     this.userService = userService;
     this.jwtUtil = jwtUtil;
   }
 
   @Override
   protected void doFilterInternal(
-      @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-      throws ServletException, IOException, IllegalArgumentException {
+          @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
+          throws ServletException, IOException, IllegalArgumentException {
     var cookies = request.getCookies();
 
     if (cookies == null) {
@@ -73,7 +73,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
       // Add extra details into the token, in this case, request information
       authToken.setDetails(new WebAuthenticationDetailsSource()
-          .buildDetails(request));
+              .buildDetails(request));
 
       SecurityContextHolder.getContext().setAuthentication(authToken);
 

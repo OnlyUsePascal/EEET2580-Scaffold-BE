@@ -12,9 +12,9 @@ import org.springframework.core.io.Resource;
 
 @Component
 public class KeyUtil {
-  @Value("${jwt.keystore.path}")
+	@Value("${jwt.keystore.path}")
 	private Resource keyStore;
-	
+
 	@Value("${jwt.keystore.type}")
 	private String keyStoreType;
 
@@ -26,7 +26,6 @@ public class KeyUtil {
 
 	@Value("${jwt.key.password}")
 	private String keyPassword;
-
 
 	private KeyStore loadKeyStore() throws Exception {
 		KeyStore ks = KeyStore.getInstance(keyStoreType);
@@ -45,8 +44,8 @@ public class KeyUtil {
 	public PublicKey getPublicKey() throws Exception {
 		return loadKeyStore().getCertificate(keyAlias).getPublicKey();
 	}
-	
-	public SecretKey getKeyV2(String alias, String keyPassword) throws Exception{
+
+	public SecretKey getKeyV2(String alias, String keyPassword) throws Exception {
 		return (SecretKey) loadKeyStore().getKey(alias, keyPassword.toCharArray());
-	} 
+	}
 }

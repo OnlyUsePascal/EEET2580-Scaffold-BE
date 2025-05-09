@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 @Entity
 @Table(name = "monitor")
+@Builder
 public class Monitor {
 
     /*
@@ -35,6 +37,7 @@ public class Monitor {
     private int id;
 
     @NotBlank(message = "Name is required")
+    @Column(unique = true)
     private String name;
 
     @NotBlank(message = "Brand is required")
@@ -48,6 +51,13 @@ public class Monitor {
     }
 
     public Monitor(String name, String brand, Integer price) {
+        this.name = name;
+        this.brand = brand;
+        this.price = price;
+    }
+
+    public Monitor(int id, String name, String brand, Integer price) {
+        this.id = id;
         this.name = name;
         this.brand = brand;
         this.price = price;

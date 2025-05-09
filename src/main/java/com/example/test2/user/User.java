@@ -17,9 +17,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class User implements UserDetails {
   @Id
@@ -30,27 +27,39 @@ public class User implements UserDetails {
   @Column(nullable = false, name = "email")
   private String email;
 
+  @Column(nullable = false, name = "name")
+  private String name;
+
   @Column(nullable = false, name = "pwd")
   private String password;
 
   @Column(nullable = false, name = "role")
   private String role;
 
-  @Column(nullable = false, name = "name")
-  private String name;
+  public User() {
+  }
+
+  public User(UUID id, String email, String name, String password, String role) {
+    this.id = id;
+    this.email = email;
+    this.name = name;
+    this.password = password;
+    this.role = role;
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority(role));
   }
 
-  public String getPassword() {
-    return password;
-  }
-
   @Override
   public String getUsername() {
     return email;
+  }
+
+  @Override
+  public String getPassword() {
+    return password;
   }
 
   @Override
@@ -71,5 +80,41 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
   }
 }

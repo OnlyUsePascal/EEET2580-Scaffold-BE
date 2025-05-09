@@ -10,11 +10,7 @@ public class ExceptionController {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ExceptionDTO> handleDefaultException(Exception e) {
     e.printStackTrace();
-    var m = "error:" + e.getClass() + " | " + e.getMessage();
-    return new ResponseEntity<>(new ExceptionDTO(m), HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-  @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-      return ResponseEntity.badRequest().body(ex.getMessage());
+    return new ResponseEntity<>(new ExceptionDTO(e.getMessage()),
+            HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

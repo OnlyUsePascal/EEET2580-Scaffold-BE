@@ -9,15 +9,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-  private final UserService userService;
-
-  @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
-
-  @GetMapping("/me")
-  public UserDTO getMyProfile(){
-    return userService.getMyProfile();
-  }
 }
