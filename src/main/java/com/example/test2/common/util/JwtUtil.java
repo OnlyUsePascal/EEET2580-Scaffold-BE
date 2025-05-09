@@ -18,12 +18,12 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
-  private Long TOKEN_AGE;
-  private KeyUtil keyUtil;
+  private final Long TOKEN_AGE;
+  private final KeyUtil keyUtil;
   
   @Autowired
   public JwtUtil(KeyUtil keyUtil) {
-    this.TOKEN_AGE = Long.valueOf(3600000);
+    this.TOKEN_AGE = 3600000L;
     this.keyUtil = keyUtil;
   }
 

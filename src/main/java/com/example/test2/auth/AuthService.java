@@ -18,9 +18,9 @@ import jakarta.servlet.http.Cookie;
 
 @Service
 public class AuthService {
-  private UserService userService;
-  private CookieUtil cookieService;
-  private JwtUtil jwtUtil;
+  private final UserService userService;
+  private final CookieUtil cookieService;
+  private final JwtUtil jwtUtil;
   
   @Autowired
   public AuthService(UserService userService, CookieUtil cookieService, JwtUtil jwtUtil) {
@@ -43,7 +43,7 @@ public class AuthService {
   static public UserDetails getCurrentUser() {
     var auth = SecurityContextHolder.getContext().getAuthentication();
     System.out.println(auth.isAuthenticated());
-    if (auth == null || !auth.isAuthenticated()) {
+    if (!auth.isAuthenticated()) {
       throw new AuthenticationCredentialsNotFoundException("No credentials found for current user");
     }
     return (UserDetails) auth.getPrincipal();
