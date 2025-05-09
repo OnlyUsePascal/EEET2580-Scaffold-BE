@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,8 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import com.example.test2.auth.AuthRequestFilter;
 import com.example.test2.common.enums.UserRole;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +33,7 @@ public class SecurityConfiguration {
         .cors(cors -> cors.configurationSource(req -> {
           CorsConfiguration config = new CorsConfiguration();
           config.setAllowedOrigins(List.of("http://localhost:5173")); // Allow frontend origin
-          config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE")); // Allow specific HTTP methods
+          config.setAllowedMethods(List.of("*")); // Allow specific HTTP methods
           config.setAllowedHeaders(List.of("*")); // Allow all headers
           config.setAllowCredentials(true); // Allow credentials (e.g., cookies)
           return config;
