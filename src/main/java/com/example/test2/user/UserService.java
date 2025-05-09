@@ -1,5 +1,6 @@
 package com.example.test2.user;
 
+import com.example.test2.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,8 +10,12 @@ import com.example.test2.auth.AuthService;
 
 @Service
 public class UserService implements UserDetailsService {
+  private final UserRepository userRepository;
+
   @Autowired
-  private UserRepository userRepository;
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   public User loadUserByUsername(String email) throws UsernameNotFoundException {
       return userRepository.findByEmail(email)

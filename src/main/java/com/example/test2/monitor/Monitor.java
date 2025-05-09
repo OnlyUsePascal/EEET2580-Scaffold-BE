@@ -1,6 +1,9 @@
 package com.example.test2.monitor;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "monitor")
@@ -30,15 +33,21 @@ public class Monitor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @NotBlank(message = "Brand is required")
     private String brand;
-    private int price;
+
+    @NotNull(message = "Price is required")
+    @Min(value = 0, message = "Price must be equal or greater than 0")
+    private Integer price;
 
     public Monitor() {
     }
 
-    public Monitor(int id, String name, String brand, int price) {
-        this.id = id;
+    public Monitor(String name, String brand, Integer price) {
         this.name = name;
         this.brand = brand;
         this.price = price;
@@ -68,21 +77,11 @@ public class Monitor {
         this.brand = brand;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
-    }
-
-    @Override
-    public String toString() {
-        return "Monitor{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", brand='" + brand + '\'' +
-                ", price=" + price +
-                '}';
     }
 }
