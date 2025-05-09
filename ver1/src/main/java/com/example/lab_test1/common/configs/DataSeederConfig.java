@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.lab_test1.common.enums.UserRole;
 import com.example.lab_test1.product.Product;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DataSeederConfig implements CommandLineRunner {
   private ProductRepository productRepository;
   private UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
 
   @Override
   public void run(String... args) {
@@ -34,14 +36,14 @@ public class DataSeederConfig implements CommandLineRunner {
     users.add(User.builder()
         .email("admin@mail.com")
         .name("admin")
-        .password("123")
+        .password(passwordEncoder.encode("123"))
         .role(UserRole.ADMIN.getName())
         .build());
     
     users.add(User.builder()
         .email("user@mail.com")
         .name("user")
-        .password("123")
+        .password(passwordEncoder.encode("123"))
         .role(UserRole.USER.getName())
         .build());
 
